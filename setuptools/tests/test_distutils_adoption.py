@@ -77,6 +77,22 @@ def test_distutils_local(venv):
     assert count_meta_path(venv, env=env) <= 1
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 12),
+    reason='stdlib distutils is used in a CPython source tree before Python 3.12',
+)
+@pytest.mark.parametrize('imports', ['distutils', 'setuptools, distutils'])
+def test_distutils_local_in_cpython_source_tree(venv, tmp_path, imports):
+    """
+    A CPython source tree (detected by ``pybuilddir.txt``) has no stdlib
+    distutils to defer to on Python 3.12+, so the local copy is used.
+    Regression test for #5335.
+    """
+    (tmp_path / 'pybuilddir.txt').touch()
+    loc = find_distutils(venv, imports=imports, cwd=tmp_path)
+    assert venv.name in loc.split(os.sep)
+
+
 def test_pip_import(venv):
     """
     Ensure pip can be imported.

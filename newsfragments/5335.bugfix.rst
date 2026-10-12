@@ -1,0 +1,1 @@
+Supply the setuptools copy of distutils in a CPython source tree on Python 3.12 and later, which no longer have distutils in the stdlib.

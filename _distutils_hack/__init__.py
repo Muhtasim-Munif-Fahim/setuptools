@@ -146,8 +146,11 @@ class DistutilsMetaFinder:
         """
         Suppress supplying distutils for CPython (build and tests).
         Ref #2965 and #3007.
+
+        Python 3.12 removed distutils from the stdlib, so there is nothing
+        to defer to there (#5335).
         """
-        return os.path.isfile('pybuilddir.txt')
+        return sys.version_info < (3, 12) and os.path.isfile('pybuilddir.txt')
 
     def spec_for_pip(self):
         """
